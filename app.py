@@ -32,12 +32,10 @@ def data_scraper(request_method, url, **kwargs):
 
 
 def generate_list(length, max_ms=500, **kwargs):
-    url = 'https://icanhazip.com/'
+    url = 'https://google.com/'
     request_method = 'get'
     valid = 0
     proxyList = []
-
-
 
     while valid < length:
         try:
@@ -87,4 +85,4 @@ def generate_list(length, max_ms=500, **kwargs):
 # print(f'response time: {ms}ms')
 
 
-print(generate_list(10))
+print(generate_list(length=10, max_ms=250))
