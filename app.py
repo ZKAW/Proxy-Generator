@@ -67,7 +67,6 @@ def generate_list(length, max_ms=500, timeout=1, **kwargs):
             pass
 
         print(f'Valid proxy: {str(valid)}/{str(length)}\n')
-
     
     current_time = time.strftime("%Y-%m-%d-%H_%M")
     output_dir = f'proxyLists\\proxy_{current_time}.json'
@@ -82,6 +81,5 @@ def generate_list(length, max_ms=500, timeout=1, **kwargs):
 
 # print(response.text)
 # print(f'response time: {ms}ms')
-
 
 print(generate_list(length=10, max_ms=150, timeout=0.3))
