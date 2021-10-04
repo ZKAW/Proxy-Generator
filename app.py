@@ -1,0 +1,90 @@
+import requests
+import webbrowser
+import json
+import time
+
+from bs4 import BeautifulSoup
+from random import choice
+
+def proxy_generator():
+    response = requests.get("https://sslproxies.org/")
+    soup = BeautifulSoup(response.content, 'html5lib')
+    proxy = {'https': choice(list(map(lambda x:x[0]+':'+x[1], list(zip(map(lambda x:x.text, soup.findAll('td')[::8]), map(lambda x:x.text, soup.findAll('td')[1::8]))))))}
+    
+    return proxy
+
+def data_scraper(request_method, url, **kwargs):
+    while True:
+        try:
+            proxy = proxy_generator()
+            print("Proxy currently being used: {}".format(proxy))
+            response = requests.request(request_method, url, proxies=proxy, timeout=7, **kwargs)
+
+            # if the request is successful, no exception is raised
+        except KeyboardInterrupt:
+            print('\nStopping...')
+            exit()
+        except:
+            print("Connection error, looking for another proxy")
+            pass
+
+    return response
+
+
+def generate_list(length, max_ms=500, **kwargs):
+    url = 'https://icanhazip.com/'
+    request_method = 'get'
+    valid = 0
+    proxyList = []
+
+
+
+    while valid < length:
+        try:
+            proxy = proxy_generator()
+
+            print("Proxy currently being used: {}".format(proxy))
+            response = requests.request(request_method, url, proxies=proxy, timeout=5, **kwargs)
+
+            ms = int(response.elapsed.total_seconds()*100)
+            ms = round(ms, 2)
+
+            if ms > max_ms:
+                print(f'The response time was too high: {proxy} took {str(ms)}ms to response but {str(max_ms)}ms is required\n')
+                continue
+            else:
+                proxyList.append(proxy)
+                print(f'New proxy: {proxy}\n-> {str(ms)}ms latency\n')
+                valid += 1
+
+        except KeyboardInterrupt:
+            print('\nStopping...')
+            if len(proxyList) < 1:
+                exit()
+            else:
+                break
+
+        except:
+            print("Connection error, looking for another proxy\n")
+            pass
+
+        print(f'Valid proxy: {str(valid)}/{str(length)}\n')
+
+    
+    current_time = time.strftime("%Y-%m-%d-%H_%M")
+    output_dir = f'proxyLists\\proxy_{current_time}.json'
+    
+    print(f'\nFinished processing proxy list. Results saved in {output_dir}\n')
+    with open(output_dir, 'w') as f:
+        json.dump(proxyList, f, sort_keys=True, indent=4)
+    return proxyList
+
+
+# response = data_scraper('get', "https://icanhazip.com/")
+# ms = str(response.elapsed.total_seconds()*100)
+
+# print(response.text)
+# print(f'response time: {ms}ms')
+
+
+print(generate_list(10))
