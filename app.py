@@ -18,7 +18,7 @@ def data_scraper(request_method, url, **kwargs):
         try:
             proxy = proxy_generator()
             print("Proxy currently being used: {}".format(proxy))
-            response = requests.request(request_method, url, proxies=proxy, timeout=7, **kwargs)
+            response = requests.request(request_method, url, proxies=proxy, timeout=5, **kwargs)
 
             # if the request is successful, no exception is raised
         except KeyboardInterrupt:
@@ -30,9 +30,9 @@ def data_scraper(request_method, url, **kwargs):
 
     return response
 
-
-def generate_list(length, max_ms=500, **kwargs):
-    url = 'https://google.com/'
+def generate_list(length, max_ms=500, timeout=1, **kwargs):
+    # url = 'https://google.com/'
+    url = 'https://icanhazip.com/'
     request_method = 'get'
     valid = 0
     proxyList = []
@@ -42,7 +42,7 @@ def generate_list(length, max_ms=500, **kwargs):
             proxy = proxy_generator()
 
             print("Proxy currently being used: {}".format(proxy))
-            response = requests.request(request_method, url, proxies=proxy, timeout=5, **kwargs)
+            response = requests.request(request_method, url, proxies=proxy, timeout=timeout, **kwargs)
 
             ms = int(response.elapsed.total_seconds()*100)
             ms = round(ms, 2)
@@ -77,7 +77,6 @@ def generate_list(length, max_ms=500, **kwargs):
         json.dump(proxyList, f, sort_keys=True, indent=4)
     return proxyList
 
-
 # response = data_scraper('get', "https://icanhazip.com/")
 # ms = str(response.elapsed.total_seconds()*100)
 
@@ -85,4 +84,4 @@ def generate_list(length, max_ms=500, **kwargs):
 # print(f'response time: {ms}ms')
 
 
-print(generate_list(length=10, max_ms=250))
+print(generate_list(length=10, max_ms=150, timeout=0.3))
