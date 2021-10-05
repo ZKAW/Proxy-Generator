@@ -6,6 +6,13 @@ import time
 from bs4 import BeautifulSoup
 from random import choice
 
+
+def load_conf():
+    with open('conf.json', 'r') as json_data:
+        conf = json.load(json_data)
+
+    return conf
+
 def proxy_generator():
     response = requests.get("https://sslproxies.org/")
     soup = BeautifulSoup(response.content, 'html5lib')
@@ -77,4 +84,6 @@ def generate_list(length, max_ms=500, timeout=1, **kwargs):
   
     return proxyList
 
-print(generate_list(length=10, max_ms=150, timeout=0.3))
+conf = load_conf()
+
+print(generate_list(length=conf['length'], max_ms=conf['max_ms'], timeout=conf['timeout']))
