@@ -26,6 +26,7 @@ def data_scraper(request_method='get', url='https://icanhazip.com/', **kwargs): 
             proxy = proxy_generator()
             print("Proxy currently being used: {}".format(proxy))
             response = requests.request(request_method, url, proxies=proxy, timeout=5, **kwargs)
+            break
 
         except KeyboardInterrupt:
             print('\nStopping...')
