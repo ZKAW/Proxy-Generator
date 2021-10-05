@@ -31,18 +31,22 @@ def data_scraper(request_method='get', url='https://icanhazip.com/', **kwargs): 
         except KeyboardInterrupt:
             print('\nStopping...')
             exit()
+
         except:
             print("Connection error, looking for another proxy")
             pass
 
     return response
 
-def generate_list(length, max_ms=500, timeout=1, **kwargs):
-    # url = 'https://google.com/'
-    url = 'https://icanhazip.com/'
+def generate_list(length, max_ms=500, timeout=1, check_google=True, **kwargs):
+    if check_google: url = 'https://google.com/'
+    else: url = 'https://icanhazip.com/'
+
     request_method = 'get'
     valid = 0
     proxyList = []
+
+    print(f'Checking proxy with url: {url}\n')
 
     while valid < length:
         try:
@@ -87,4 +91,8 @@ def generate_list(length, max_ms=500, timeout=1, **kwargs):
 
 conf = load_conf()
 
-print(generate_list(length=conf['length'], max_ms=conf['max_ms'], timeout=conf['timeout']))
+print(generate_list(length=conf['length'],
+                    max_ms=conf['max_ms'],
+                    timeout=conf['timeout'],
+                    check_google=conf['check_google']
+                    ))
