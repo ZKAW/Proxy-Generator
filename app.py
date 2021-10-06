@@ -38,7 +38,7 @@ def data_scraper(request_method='get', url='https://icanhazip.com/', **kwargs): 
 
     return response
 
-def generate_list(length, max_ms=500, timeout=1, check_google=True, **kwargs):
+def generate_list(length=10, max_ms=500, timeout=1, check_google=True, **kwargs):
     if check_google: url = 'https://google.com/'
     else: url = 'https://icanhazip.com/'
 
