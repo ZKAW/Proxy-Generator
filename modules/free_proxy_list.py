@@ -29,11 +29,11 @@ def load_conf():
 
 def generate_list(length=10, max_ms=500, timeout=1, check_google=True):
     """
-    This function returns list of proxies and returns None
+    This function returns list of proxyList and returns None
     in case of failure.
     """
 
-    # url of site containing proxies
+    # url of site containing proxyList
     if check_google: url = 'https://google.com'
     else: url = 'https://icanhazip.com/' 
 
@@ -55,7 +55,7 @@ def generate_list(length=10, max_ms=500, timeout=1, check_google=True):
         return None
 
     soup = bs(page.text, 'html.parser')  # creating soup object
-    proxies = []  # final list of dictionaries each containing proxy info
+    proxyList = []  # final list of dictionaries each containing proxy info
 
     table = soup.find('table')
     tbody = table.tbody if table else None  # contains rows of IPs and Stuff
@@ -64,7 +64,7 @@ def generate_list(length=10, max_ms=500, timeout=1, check_google=True):
         infos = tbody.find_all('tr')
         for info in infos:
             if valid >= length:
-                return proxies
+                break
             # each info is a tr from tbody of table
             # extracting info from table rows
             proxy_data_temp = [i.text for i in info]
@@ -85,13 +85,13 @@ def generate_list(length=10, max_ms=500, timeout=1, check_google=True):
                         continue
                     else:
                         proxy['ms'] = ms
-                        proxies.append(proxy)
+                        proxyList.append(proxy)
                         print(f'New proxy: {proxy}\n-> {str(ms)}ms latency\n')
                         valid += 1
 
                 except KeyboardInterrupt:
                     print('\nStopping...')
-                    if len(proxies) < 1:
+                    if len(proxyList) <= 1:
                         exit()
                     else:
                         break
@@ -103,11 +103,21 @@ def generate_list(length=10, max_ms=500, timeout=1, check_google=True):
             print(f'Valid proxy: {str(valid)}/{str(length)}\n')
 
 
+        # Save results into json file
 
-        return proxies
+        if len(proxyList) >= 1:
+            current_time = time.strftime("%Y-%m-%d-%H_%M")
+            output_dir = f'output\\proxy_{current_time}.json'
+            with open(output_dir, 'w') as f:
+                json.dump(proxyList, f, sort_keys=True, indent=4)
+            print(f'\nFinished processing proxy list. Results saved in {output_dir}\n')
+
+        else:
+            print('\nFinished processing proxy list, but no proxy were found.')
+
+        return proxyList
 
 conf = load_conf()
-print(conf)
 
 print(generate_list(length=conf['length'],
                     max_ms=conf['max_ms'],
