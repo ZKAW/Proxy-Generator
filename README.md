@@ -1,14 +1,14 @@
 # Proxy-Generator 
 
-**Description**
+#### Description
 Generator of proxy list with validity and ms verification
 
-**Setup**
+#### Setup
 ```bash
 pip3 install -r requirements.txt
 ```
 
-**Usage**
+#### Usage
 ```bash
 python3 app.py
 ```
